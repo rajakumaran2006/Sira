@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function DeleteSelectedModal({ isOpen, onClose, count, onConfirm, isLoading = false }) {
@@ -8,6 +9,11 @@ export default function DeleteSelectedModal({ isOpen, onClose, count, onConfirm,
   const [userInput, setUserInput] = useState('');
   const [error, setError] = useState('');
   const inputRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate a random 3-digit code when the modal opens (or item count changes)
   useEffect(() => {
@@ -23,7 +29,7 @@ export default function DeleteSelectedModal({ isOpen, onClose, count, onConfirm,
     }
   }, [isOpen, count]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -34,7 +40,7 @@ export default function DeleteSelectedModal({ isOpen, onClose, count, onConfirm,
     onConfirm();
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
       <div
         className="w-full max-w-md overflow-hidden glass-modal rounded-3xl border border-white/50"
@@ -145,6 +151,7 @@ export default function DeleteSelectedModal({ isOpen, onClose, count, onConfirm,
           )}
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

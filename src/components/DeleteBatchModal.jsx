@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function DeleteBatchModal({ isOpen, onClose, batchName, onConfirm }) {
@@ -9,6 +10,11 @@ export default function DeleteBatchModal({ isOpen, onClose, batchName, onConfirm
   const [error, setError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const inputRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate a random 3-digit code whenever the modal opens or batchName changes
   useEffect(() => {
@@ -28,7 +34,7 @@ export default function DeleteBatchModal({ isOpen, onClose, batchName, onConfirm
     }
   }, [isOpen, batchName]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +53,7 @@ export default function DeleteBatchModal({ isOpen, onClose, batchName, onConfirm
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
       <div 
         className="w-full max-w-md overflow-hidden glass-modal rounded-3xl border border-white/50"
@@ -132,6 +138,7 @@ export default function DeleteBatchModal({ isOpen, onClose, batchName, onConfirm
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, AlertCircle, Loader2 } from 'lucide-react';
 
 export default function DeleteBookModal({ isOpen, onClose, bookTitle, bookAccessNo, onConfirm }) {
@@ -9,6 +10,11 @@ export default function DeleteBookModal({ isOpen, onClose, bookTitle, bookAccess
   const [error, setError] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const inputRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Generate a random 3-digit code when the modal opens
   useEffect(() => {
@@ -26,7 +32,7 @@ export default function DeleteBookModal({ isOpen, onClose, bookTitle, bookAccess
     }
   }, [isOpen, bookTitle]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -46,7 +52,7 @@ export default function DeleteBookModal({ isOpen, onClose, bookTitle, bookAccess
     }
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
       <div
         className="w-full max-w-md overflow-hidden glass-modal rounded-3xl border border-white/50"
@@ -150,6 +156,7 @@ export default function DeleteBookModal({ isOpen, onClose, bookTitle, bookAccess
           )}
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

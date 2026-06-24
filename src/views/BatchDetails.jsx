@@ -26,7 +26,7 @@ export default function BatchDetails({ batchId, scannerMode, setScannerMode, onN
   const [flashItemId, setFlashItemId] = useState(null);
   const [flashType, setFlashType] = useState('success'); // 'success' or 'anomaly'
   const tableContainerRef = useRef(null);
-
+  
   // Delete book modal state
   const [isDeleteBookOpen, setIsDeleteBookOpen] = useState(false);
   const [bookToDelete, setBookToDelete] = useState(null);

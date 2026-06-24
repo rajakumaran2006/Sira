@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { X, UploadCloud, FileSpreadsheet, AlertCircle, Loader } from 'lucide-react';
 import { createBatch } from '../utils/api';
 
@@ -10,10 +11,15 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
   const [isDragging, setIsDragging] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const fileInputRef = useRef(null);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -94,7 +100,7 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
       <div 
         className="w-full max-w-md overflow-hidden glass-modal rounded-3xl border border-white/50"
@@ -221,6 +227,7 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
