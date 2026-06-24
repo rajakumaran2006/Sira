@@ -22,6 +22,10 @@ const BatchSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  anomaliesCount: {
+    type: Number,
+    default: 0,
+  },
   isDefault: {
     type: Boolean,
     default: false,

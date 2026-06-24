@@ -23,7 +23,7 @@ export default function ScannerSimulator({ onScan, borderless = false }) {
         <div className="h-7 w-7 rounded-full bg-gray-200/60 flex items-center justify-center border border-gray-200/50">
           <Keyboard className="w-3.5 h-3.5 text-gray-700" />
         </div>
-        <h4 className="text-xs font-bold text-[#1e293b]">Simulator Keyboard Input</h4>
+        <h4 className="text-xs uppercase font-bold text-[#1e293b]">Mannual Input</h4>
       </div>
 
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -39,45 +39,10 @@ export default function ScannerSimulator({ onScan, borderless = false }) {
           disabled={!accessNo.trim()}
           className="px-4 py-2.5 rounded-full bg-black hover:bg-black/90 disabled:bg-gray-100 text-white disabled:text-gray-400 font-bold text-xs transition-all flex items-center gap-1 shrink-0"
         >
-          <span>Scan</span>
+          <span>Search</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </form>
-
-      {/* Quick Test Shortcuts */}
-      <div className="space-y-2">
-        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 block">Simulation Presets</span>
-        <div className="flex flex-wrap gap-1.5">
-          <button
-            type="button"
-            onClick={() => handleQuickTest('10087')}
-            className="px-3 py-1.5 rounded-full bg-gray-200/50 hover:bg-gray-200 text-[10px] font-bold text-gray-600 hover:text-black transition-colors border border-gray-200/20"
-          >
-            10087 (Valid Book)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickTest('10141')}
-            className="px-3 py-1.5 rounded-full bg-gray-200/50 hover:bg-gray-200 text-[10px] font-bold text-gray-600 hover:text-black transition-colors border border-gray-200/20"
-          >
-            10141 (Valid Book)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickTest('1048')}
-            className="px-3 py-1.5 rounded-full bg-gray-200/50 hover:bg-gray-200 text-[10px] font-bold text-gray-600 hover:text-black transition-colors border border-gray-200/20"
-          >
-            1048 (Valid Book)
-          </button>
-          <button
-            type="button"
-            onClick={() => handleQuickTest('99999')}
-            className="px-3 py-1.5 rounded-full bg-red-50 hover:bg-red-100 text-[10px] font-bold text-red-600 hover:text-red-700 transition-colors border border-red-200/30"
-          >
-            99999 (Anomaly)
-          </button>
-        </div>
-      </div>
     </div>
   );
 }

@@ -9,7 +9,8 @@ export const dynamic = 'force-dynamic';
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const batch = await Batch.findById(params.id);
+    const { id } = await params;
+    const batch = await Batch.findById(id);
     if (!batch) {
       return NextResponse.json({ error: 'Batch not found' }, { status: 404 });
     }
@@ -24,7 +25,8 @@ export async function GET(request, { params }) {
 export async function DELETE(request, { params }) {
   try {
     await connectDB();
-    const batch = await Batch.findById(params.id);
+    const { id } = await params;
+    const batch = await Batch.findById(id);
     if (!batch) {
       return NextResponse.json({ error: 'Batch not found' }, { status: 404 });
     }

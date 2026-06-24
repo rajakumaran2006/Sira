@@ -9,12 +9,25 @@ export const dynamic = 'force-dynamic';
 export async function GET(request, { params }) {
   try {
     await connectDB();
-    const batch = await Batch.findById(params.id);
+    const { id } = await params;
+    const batch = await Batch.findById(id);
     if (!batch) {
       return NextResponse.json({ error: 'Batch not found' }, { status: 404 });
     }
     
-    const items = await Item.find({ batchId: batch._id }).sort({ accessNo: 1 });
+    const { searchParams } = new URL(request.url);
+    const statusFilter = searchParams.get('status') || 'All';
+    
+    const query = { batchId: batch._id };
+    if (statusFilter === 'Found') {
+      query.status = 'Found';
+    } else if (statusFilter === 'Not Found') {
+      query.status = 'Not Found';
+    } else if (statusFilter === 'Anomalies' || statusFilter === 'Not in CSV') {
+      query.status = 'Not in CSV';
+    }
+    
+    const items = await Item.find(query).sort({ accessNo: 1 });
     
     // Construct CSV file
     const headers = ['Access No', 'Title', 'Author Name', 'Publisher', 'Call No', 'Location', 'Status', 'Document', 'Price', 'Verified At'];
@@ -38,13 +51,24 @@ export async function GET(request, { params }) {
     }
     
     const csvContent = csvRows.join('\n');
-    const sanitizedBatchName = batch.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+    const sanitizedBatchName = batch.name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+    
+    let suffix = 'all';
+    if (statusFilter === 'Found') {
+      suffix = 'found';
+    } else if (statusFilter === 'Not Found') {
+      suffix = 'not_found';
+    } else if (statusFilter === 'Anomalies' || statusFilter === 'Not in CSV') {
+      suffix = 'not_in_csv';
+    }
+    
+    const filename = `${sanitizedBatchName}_${suffix}.csv`;
     
     return new Response(csvContent, {
       status: 200,
       headers: {
         'Content-Type': 'text/csv',
-        'Content-Disposition': `attachment; filename="sira_export_${sanitizedBatchName}.csv"`,
+        'Content-Disposition': `attachment; filename="${filename}"`,
       },
     });
   } catch (error) {

@@ -1,17 +1,18 @@
 "use client";
 
 import React, { useContext } from 'react';
-import Dashboard from '../views/Dashboard';
-import { AppContext } from '../components/ClientAppWrapper';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
+import BatchDetails from '../../../views/BatchDetails';
+import { AppContext } from '../../../components/ClientAppWrapper';
 
 export default function Page() {
+  const params = useParams();
   const router = useRouter();
   const context = useContext(AppContext);
 
   if (!context) return null;
 
-  const { scannerMode, showToast } = context;
+  const { scannerMode, setScannerMode, showToast } = context;
 
   const handleNavigate = (page, batchId = null) => {
     if (page === 'dashboard') {
@@ -22,8 +23,10 @@ export default function Page() {
   };
 
   return (
-    <Dashboard
+    <BatchDetails
+      batchId={params.id}
       scannerMode={scannerMode}
+      setScannerMode={setScannerMode}
       onNavigate={handleNavigate}
       onShowToast={showToast}
     />

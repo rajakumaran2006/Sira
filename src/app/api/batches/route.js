@@ -30,6 +30,16 @@ export async function POST(request) {
     if (!batchName) {
       return NextResponse.json({ error: 'Batch Name is required' }, { status: 400 });
     }
+
+    // Check if batch name already exists (case-insensitive)
+    const escapedBatchName = batchName.trim().replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const existingBatch = await Batch.findOne({ 
+      name: { $regex: new RegExp(`^${escapedBatchName}$`, 'i') } 
+    });
+    if (existingBatch) {
+      return NextResponse.json({ error: 'A batch with this name already exists' }, { status: 400 });
+    }
+
     if (!file) {
       return NextResponse.json({ error: 'Inventory file is required' }, { status: 400 });
     }

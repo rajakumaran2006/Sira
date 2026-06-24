@@ -65,6 +65,40 @@ export async function verifyScan(batchId, accessNo) {
   return res.json();
 }
 
-export function getExportUrl(batchId) {
-  return `${API_BASE}/batches/${batchId}/export`;
+export function getExportUrl(batchId, status = 'All') {
+  return `${API_BASE}/batches/${batchId}/export?status=${encodeURIComponent(status)}`;
 }
+
+export async function updateItemStatus(itemId, status) {
+  const res = await fetch(`${API_BASE}/items/${itemId}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error('Failed to update item status');
+  return res.json();
+}
+
+export async function deleteItem(itemId) {
+  const res = await fetch(`${API_BASE}/items/${itemId}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Failed to delete item');
+  return res.json();
+}
+
+export async function bulkDeleteItems(ids) {
+  const res = await fetch(`${API_BASE}/items/bulk-delete`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ids }),
+  });
+  if (!res.ok) {
+    const errorData = await res.json().catch(() => ({}));
+    throw new Error(errorData.error || 'Failed to delete items');
+  }
+  return res.json();
+}
+

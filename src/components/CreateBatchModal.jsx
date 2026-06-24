@@ -95,19 +95,20 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/30 backdrop-blur-sm transition-opacity duration-300">
       <div 
-        className="w-full max-w-md overflow-hidden glass-modal rounded-3xl animate-pulse-subtle border border-white/50"
+        className="w-full max-w-md overflow-hidden glass-modal rounded-3xl border border-white/50"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-5 border-b border-gray-200/50">
           <div>
-            <h3 className="text-lg font-bold text-black">Create New Batch</h3>
+            <h3 className="text-lg font-bold uppercase text-black">Create New Batch</h3>
             <p className="text-xs text-gray-500">Seed verification room with inventory spreadsheet</p>
           </div>
           <button 
             onClick={onClose} 
-            className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-black transition-colors"
+            disabled={loading}
+            className="p-1.5 rounded-full hover:bg-gray-100 text-gray-400 hover:text-black disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -144,7 +145,7 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
               onClick={() => fileInputRef.current?.click()}
               className={`relative border-2 border-dashed rounded-3xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all duration-200 ${
                 isDragging 
-                  ? 'border-black bg-black/5 scale-[0.99]' 
+                  ? 'border-black bg-black/5' 
                   : file 
                     ? 'border-green-500/50 bg-green-50/10' 
                     : 'border-gray-200 hover:border-gray-400 bg-white/40'
@@ -186,7 +187,7 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
                   </div>
                   <div>
                     <p className="text-sm font-bold text-black">Drag & drop your file here</p>
-                    <p className="text-xs text-gray-400">or click to browse from finder</p>
+                    <p className="text-xs text-gray-400">or click to browse from device</p>
                   </div>
                   <span className="text-[10px] text-gray-400 uppercase tracking-widest pt-2">Supports CSV, TSV, XLS, XLSX</span>
                 </div>
@@ -206,7 +207,7 @@ export default function CreateBatchModal({ isOpen, onClose, onBatchCreated }) {
             <button
               type="submit"
               disabled={loading || !file || !batchName}
-              className="flex-1 py-3.5 rounded-2xl bg-black hover:bg-black/90 disabled:bg-gray-200 text-sm font-bold text-white disabled:text-gray-400 transition-all flex items-center justify-center gap-1.5"
+              className="flex-1 py-3.5 rounded-2xl bg-black hover:bg-black/90 disabled:bg-gray-200 text-sm font-bold text-white disabled:text-gray-400 flex items-center justify-center gap-1.5"
             >
               {loading ? (
                 <>

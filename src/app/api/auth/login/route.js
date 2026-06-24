@@ -15,17 +15,17 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Username and password are required' }, { status: 400 });
     }
 
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username: username.toUpperCase() });
     
     // Direct comparison as requested (do not encode)
-    if (!user || user.password !== password) {
+    if (!user || user.password.toUpperCase() !== password.toUpperCase()) {
       return NextResponse.json({ error: 'Invalid username or password' }, { status: 401 });
     }
 
-    const token = signToken({ userId: user._id, username: user.username });
+    const token = signToken({ userId: user._id, username: user.username, avatarUrl: user.avatarUrl });
     
     // Set session cookie
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     cookieStore.set('sira_session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
@@ -34,7 +34,7 @@ export async function POST(request) {
       maxAge: 24 * 60 * 60, // 1 day
     });
 
-    return NextResponse.json({ success: true, user: { username: user.username } });
+    return NextResponse.json({ success: true, user: { username: user.username, avatarUrl: user.avatarUrl } });
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

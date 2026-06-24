@@ -9,11 +9,12 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
     
+    const { id } = await params;
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');
     const search = searchParams.get('search');
     
-    const query = { batchId: params.id };
+    const query = { batchId: id };
     
     if (status && status !== 'All') {
       // If status is Anomalies, we query for 'Not in CSV'

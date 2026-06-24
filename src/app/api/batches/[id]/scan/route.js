@@ -9,8 +9,9 @@ export const dynamic = 'force-dynamic';
 export async function POST(request, { params }) {
   try {
     await connectDB();
+    const { id } = await params;
     const { accessNo } = await request.json();
-    const batchId = params.id;
+    const batchId = id;
     
     if (!accessNo) {
       return NextResponse.json({ error: 'Access No (barcode) is required' }, { status: 400 });
@@ -73,8 +74,9 @@ export async function POST(request, { params }) {
       
       const savedAnomaly = await anomalyItem.save();
       
-      // Increment batch total items
-      batch.totalItems += 1;
+      // Increment batch found items and anomalies count
+      batch.foundItems = (batch.foundItems || 0) + 1;
+      batch.anomaliesCount = (batch.anomaliesCount || 0) + 1;
       await batch.save();
       
       return NextResponse.json({ 
